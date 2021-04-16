@@ -2,5 +2,5 @@ class User {
   final String username;
   final String token;
 
-  User({this.username, this.token});
+  User({required this.username, required this.token});
 }

@@ -15,7 +15,11 @@ class ApiAuthService implements AuthService {
   ApiAuthService(this._api);
 
   Future<T> _post<T>(String path, String username, String pwd) => http
-      .post(_api.endpoint('products'),
+      .post(_api.endpoint(path),
+          headers: {
+            'Keep-Alive': 'timeout=5, max=1000',
+            'Content-Type': 'application/json'
+          },
           body: jsonEncode({
             'username': username,
             'password': pwd,
@@ -23,12 +27,18 @@ class ApiAuthService implements AuthService {
       .then((response) => jsonDecode(response.body));
 
   @override
-  Future<AuthResponse> signIn({String username, String pwd}) =>
-      _post<Map<String, dynamic>>('login', username, pwd)
+  Future<AuthResponse> signIn({
+    required String username,
+    required String pwd,
+  }) =>
+      _post<Map<String, dynamic>>('login/', username, pwd)
           .then(AuthResponse.fromMap);
 
   @override
-  Future<AuthResponse> signUp({String username, String pwd}) =>
-      _post<Map<String, dynamic>>('register', username, pwd)
+  Future<AuthResponse> signUp({
+    required String username,
+    required String pwd,
+  }) =>
+      _post<Map<String, dynamic>>('register/', username, pwd)
           .then(AuthResponse.fromMap);
 }

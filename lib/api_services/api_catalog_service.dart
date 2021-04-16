@@ -3,43 +3,65 @@ import 'dart:convert';
 import 'package:catalog/abstract_services/catalog_service.dart';
 import 'package:catalog/api_services/api.dart';
 import 'package:catalog/entities/product.dart';
+import 'package:catalog/entities/user.dart';
 
 import 'package:http/http.dart' as http;
 
 class APICatalogService implements CatalogService {
   final API _api;
-  final String _token;
-  APICatalogService(this._api, {String token}) : _token = token;
+  final User _user;
+  APICatalogService(this._api, {required User user}) : _user = user;
 
-  Map<String, String> _authHeaders() => {'Authorization': 'Token $_token'};
+  Map<String, String> _authHeaders() => {
+        'Authorization': 'Token ${_user.token}',
+        'Content-Type': 'application/json',
+      };
 
-  Future<T> _get<T>(String path) => http
-      .get(_api.endpoint('products'), headers: _authHeaders())
-      .then((response) => jsonDecode(response.body));
+  Future<List<Map<String, dynamic>>> _getList(String path) async {
+    print(_api.endpoint(path).path);
+    final response =
+        await http.get(_api.endpoint(path), headers: _authHeaders());
+    return List.from(jsonDecode(response.body)).cast<Map<String, dynamic>>();
+  }
 
   @override
   Future<List<Product>> list() async {
-    final rawProducts = await _get<List<Map<String, dynamic>>>('products');
+    final rawProducts = await _getList('products/');
     final products = await Future.wait(
       rawProducts.map((rawProd) async {
-        final rawComments =
-            await _get<List<Map<String, dynamic>>>('reviews/${rawProd['id']}');
-        return Product.fromMap({...rawProd, 'comments': rawComments});
+        final rawComments = await _getList('reviews/${rawProd['id']}');
+        final fullImgUrl = _api.assetUrl(rawProd['img']);
+        print(fullImgUrl);
+        return Product.fromMap({
+          ...rawProd,
+          'comments': rawComments,
+          'img': fullImgUrl,
+        });
       }),
     );
     return products.toList();
   }
 
   @override
-  Future<Comment> addReview(String productId, {String text, int rate}) async {
-    final response = await http.post(
+  Future<Comment> addReview(
+    int productId, {
+    required String text,
+    required int rate,
+  }) async {
+    await http.post(
       _api.endpoint('reviews/$productId'),
+      headers: _authHeaders(),
       body: jsonEncode({
         'text': text,
         'rate': rate,
       }),
     );
-    final id = jsonDecode(response.body)['id'];
-    return Comment(content: text, id: id, rate: rate);
+    return Comment(
+      content: text,
+      rate: rate,
+      creator: Creator(
+        username: _user.username,
+      ),
+    );
   }
 }

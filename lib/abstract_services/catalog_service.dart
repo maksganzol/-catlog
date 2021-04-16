@@ -2,5 +2,9 @@ import 'package:catalog/entities/product.dart';
 
 abstract class CatalogService {
   Future<List<Product>> list();
-  Future<Comment> addReview(String productId, {String text, int rate});
+  Future<Comment> addReview(
+    int productId, {
+    required String text,
+    required int rate,
+  });
 }

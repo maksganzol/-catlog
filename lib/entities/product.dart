@@ -1,48 +1,75 @@
+class Creator {
+  final String username;
+  final String? firstName;
+  final String? lastName;
+  final String? email;
+
+  Creator({
+    required this.username,
+    this.firstName,
+    this.lastName,
+    this.email,
+  });
+
+  static Creator fromMap(Map<String, dynamic> map) {
+    return Creator(
+      username: map['username'],
+      email: map['email'],
+      firstName: map['first_name'],
+      lastName: map['last_name'],
+    );
+  }
+}
+
 class Comment {
-  final String id;
   final int rate;
   final String content;
+  final Creator creator;
 
   Comment({
-    this.id,
-    this.rate,
-    this.content,
+    required this.creator,
+    required this.rate,
+    required this.content,
   });
 
   static Comment fromMap(Map<String, dynamic> map) {
+    final creator = map['created_by'];
+    print('Creator $creator');
     return Comment(
-      id: map['id'],
       content: map['text'],
       rate: map['rate'],
+      creator: Creator.fromMap(creator),
     );
   }
 }
 
 class Product {
-  final String id;
+  final int id;
   final String img;
   final String decription;
   final String title;
 
-  final List<Comment> comments;
+  List<Comment> comments;
 
   Product({
-    this.id,
-    this.img,
-    this.decription,
-    this.title,
+    required this.id,
+    required this.img,
+    required this.decription,
+    required this.title,
     this.comments = const [],
   });
 
   static Product fromMap(Map<String, dynamic> map) {
     final comments = map['comments'] ?? [];
-
     return Product(
       id: map['id'],
       img: map['img'],
       decription: map['text'],
       title: map['title'],
-      comments: comments.map(Comment.fromMap),
+      comments: List.from(comments)
+          .cast<Map<String, dynamic>>()
+          .map(Comment.fromMap)
+          .toList(),
     );
   }
 }

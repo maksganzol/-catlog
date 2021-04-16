@@ -4,24 +4,43 @@ import 'package:flutter/cupertino.dart';
 
 class CatalogModel extends ChangeNotifier {
   final CatalogService _service;
-  final List<Product> _allProducts;
+  List<Product> _allProducts = [];
 
   CatalogModel(
-    this._service, {
-    List<Product> products,
-  }) : _allProducts = products ?? [];
+    this._service,
+  );
 
-  Future<void> addReview(String productId, {String content, int rate}) async {
+  Future<void> initModels() async {
+    _allProducts = await _service.list();
+    notifyListeners();
+  }
+
+  Future<void> addReview(
+    int productId, {
+    required String content,
+    required int rate,
+  }) async {
     final comment = await _service.addReview(
       productId,
       text: content,
       rate: rate,
     );
+    print(products
+        .firstWhere((element) => element.id == productId)
+        .comments
+        .length);
+    _allProducts = _allProducts.map((prod) {
+      if (prod.id == productId)
+        return prod..comments = [...prod.comments, comment];
+      return prod;
+    }).toList();
 
-    _allProducts.map((prod) {
-      if (prod.id == productId) prod.comments.add(comment);
-    });
-
+    print(products
+        .firstWhere((element) => element.id == productId)
+        .comments
+        .length);
     notifyListeners();
   }
+
+  List<Product> get products => _allProducts;
 }
