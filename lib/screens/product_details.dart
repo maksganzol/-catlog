@@ -1,4 +1,5 @@
 import 'package:catalog/entities/product.dart';
+import 'package:catalog/models/auth_provider.dart';
 import 'package:catalog/models/catalog_model.dart';
 import 'package:catalog/widgets/review.dart';
 import 'package:catalog/widgets/review_dialog.dart';
@@ -17,6 +18,7 @@ class ProductDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = Provider.of<CatalogModel>(context);
+    final authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
         appBar: AppBar(
           leading: ElevatedButton(
@@ -24,19 +26,21 @@ class ProductDetails extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => showDialog(
-            context: context,
-            builder: (context) => ReviewDialog(
-              onSubmit: (content, rate) => model.addReview(
-                product.id,
-                content: content,
-                rate: rate,
-              ),
-            ),
-          ),
-          child: Icon(Icons.comment),
-        ),
+        floatingActionButton: authProvider.currentUser != null
+            ? FloatingActionButton(
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (context) => ReviewDialog(
+                    onSubmit: (content, rate) => model.addReview(
+                      product.id,
+                      content: content,
+                      rate: rate,
+                    ),
+                  ),
+                ),
+                child: Icon(Icons.comment),
+              )
+            : null,
         body: SingleChildScrollView(
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),

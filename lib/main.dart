@@ -3,8 +3,7 @@ import 'package:catalog/api_services/api_auth_service.dart';
 import 'package:catalog/api_services/api_catalog_service.dart';
 import 'package:catalog/models/auth_provider.dart';
 import 'package:catalog/models/catalog_model.dart';
-import 'package:catalog/screens/home.dart';
-import 'package:catalog/screens/login.dart';
+import 'package:catalog/screens/catalog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -33,14 +32,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
-    if (authProvider.currentUser == null)
-      return MaterialApp(
-        home: Login(),
-      );
-
     final catalogService = APICatalogService(
       api,
-      user: authProvider.currentUser!,
+      user: authProvider.currentUser,
     );
     return ChangeNotifierProvider<CatalogModel>(
       create: (ctx) =>

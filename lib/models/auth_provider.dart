@@ -8,7 +8,7 @@ class AuthProvider extends ChangeNotifier {
 
   AuthProvider(this._service);
 
-  signIn(String username, String pwd) async {
+  Future<void> signIn(String username, String pwd) async {
     final response = await _service.signIn(username: username, pwd: pwd);
     if (response is SuccessResponse) {
       currentUser = User(token: response.token, username: username);
@@ -16,7 +16,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  signUp(String username, String pwd) async {
+  Future<void> signUp(String username, String pwd) async {
     final response = await _service.signUp(username: username, pwd: pwd);
     if (response is SuccessResponse) {
       currentUser = User(token: response.token, username: username);

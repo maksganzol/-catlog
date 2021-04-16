@@ -47,7 +47,7 @@ class LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
-
+    if (authProvider.currentUser != null) Navigator.of(context).pop();
     return Scaffold(
       body: Center(
         child: Container(

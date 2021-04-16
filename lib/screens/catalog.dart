@@ -1,5 +1,6 @@
 import 'package:catalog/models/auth_provider.dart';
 import 'package:catalog/models/catalog_model.dart';
+import 'package:catalog/screens/login.dart';
 import 'package:catalog/screens/product_details.dart';
 import 'package:catalog/widgets/product_list_item.dart';
 import 'package:flutter/material.dart';
@@ -11,14 +12,24 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
     final catalogModel = Provider.of<CatalogModel>(context);
+    final trailing = authProvider.currentUser != null
+        ? ElevatedButton(
+            onPressed: () => authProvider.signOut(),
+            child: Text('Sign out'),
+          )
+        : ElevatedButton(
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (ctx) => Login(),
+              ),
+            ),
+            child: Text('Sign in'),
+          );
 
     return Scaffold(
       appBar: AppBar(
         actions: [
-          ElevatedButton(
-            onPressed: () => authProvider.signOut(),
-            child: Text('Sign out'),
-          )
+          trailing,
         ],
         centerTitle: true,
         title: Text('Catalog'),
