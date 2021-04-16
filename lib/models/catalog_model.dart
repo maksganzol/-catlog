@@ -25,20 +25,13 @@ class CatalogModel extends ChangeNotifier {
       text: content,
       rate: rate,
     );
-    print(products
-        .firstWhere((element) => element.id == productId)
-        .comments
-        .length);
+
     _allProducts = _allProducts.map((prod) {
       if (prod.id == productId)
         return prod..comments = [...prod.comments, comment];
       return prod;
     }).toList();
 
-    print(products
-        .firstWhere((element) => element.id == productId)
-        .comments
-        .length);
     notifyListeners();
   }
 

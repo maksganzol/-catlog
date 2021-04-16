@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 class AuthProvider extends ChangeNotifier {
   final AuthService _service;
   User? currentUser;
+  String? errorMessage;
 
   AuthProvider(this._service);
 
@@ -12,6 +13,9 @@ class AuthProvider extends ChangeNotifier {
     final response = await _service.signIn(username: username, pwd: pwd);
     if (response is SuccessResponse) {
       currentUser = User(token: response.token, username: username);
+    }
+    if (response is FailureResponse) {
+      errorMessage = response.message;
     }
     notifyListeners();
   }
@@ -25,7 +29,6 @@ class AuthProvider extends ChangeNotifier {
   }
 
   signOut() {
-    print('Sign OUT');
     currentUser = null;
     notifyListeners();
   }

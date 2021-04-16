@@ -34,7 +34,6 @@ class Comment {
 
   static Comment fromMap(Map<String, dynamic> map) {
     final creator = map['created_by'];
-    print('Creator $creator');
     return Comment(
       content: map['text'],
       rate: map['rate'],

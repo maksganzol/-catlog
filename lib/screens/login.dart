@@ -56,6 +56,11 @@ class LoginState extends State<Login> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              if (authProvider.errorMessage != null)
+                Text(
+                  authProvider.errorMessage!,
+                  style: TextStyle(color: Colors.red),
+                ),
               TextFormField(controller: _usernameCon),
               TextFormField(controller: _pwdCon, obscureText: true),
               _buildSubmitButton(

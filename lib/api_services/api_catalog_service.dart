@@ -18,7 +18,6 @@ class APICatalogService implements CatalogService {
       };
 
   Future<List<Map<String, dynamic>>> _getList(String path) async {
-    print(_api.endpoint(path).path);
     final response =
         await http.get(_api.endpoint(path), headers: _authHeaders());
     return List.from(jsonDecode(response.body)).cast<Map<String, dynamic>>();
@@ -31,7 +30,6 @@ class APICatalogService implements CatalogService {
       rawProducts.map((rawProd) async {
         final rawComments = await _getList('reviews/${rawProd['id']}');
         final fullImgUrl = _api.assetUrl(rawProd['img']);
-        print(fullImgUrl);
         return Product.fromMap({
           ...rawProd,
           'comments': rawComments,

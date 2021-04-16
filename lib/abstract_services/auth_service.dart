@@ -1,8 +1,7 @@
 class AuthResponse {
   static AuthResponse fromMap(Map<String, dynamic> map) {
-    print(map);
     if (map['success']) return SuccessResponse(map['token']);
-    return FailureResponse();
+    return FailureResponse(map['message']);
   }
 }
 
@@ -11,7 +10,11 @@ class SuccessResponse extends AuthResponse {
   SuccessResponse(this.token);
 }
 
-class FailureResponse extends AuthResponse {}
+class FailureResponse extends AuthResponse {
+  final String message;
+
+  FailureResponse(this.message);
+}
 
 abstract class AuthService {
   Future<AuthResponse> signIn({required String username, required String pwd});
