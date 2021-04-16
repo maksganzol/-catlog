@@ -69,6 +69,17 @@ class ProductDetails extends StatelessWidget {
                         product.decription,
                         style: TextStyle(fontSize: 20),
                       ),
+                      Row(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(top: 30),
+                            child: Text(
+                              'Reviews',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ),
+                        ],
+                      ),
                       ...product.comments.map(
                         (comment) => Review(comment: comment),
                       ),

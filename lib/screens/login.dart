@@ -15,9 +15,6 @@ class Login extends StatefulWidget {
 class LoginState extends State<Login> {
   Action _currentAction = Action.signin;
 
-  final _usernameCon = TextEditingController();
-  final _pwdCon = TextEditingController();
-
   Widget _buildStyledButton(String text, Function() onPressed) => TextButton(
         onPressed: onPressed,
         style: ButtonStyle(
@@ -46,8 +43,12 @@ class LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    final _usernameCon = TextEditingController();
+    final _pwdCon = TextEditingController();
+
     final authProvider = Provider.of<AuthProvider>(context);
     if (authProvider.currentUser != null) Navigator.of(context).pop();
+
     return Scaffold(
       body: Center(
         child: Container(
@@ -55,8 +56,8 @@ class LoginState extends State<Login> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextField(controller: _usernameCon),
-              TextField(controller: _pwdCon),
+              TextFormField(controller: _usernameCon),
+              TextFormField(controller: _pwdCon, obscureText: true),
               _buildSubmitButton(
                 () => authProvider.signIn(_usernameCon.text, _pwdCon.text),
                 () => authProvider.signUp(_usernameCon.text, _pwdCon.text),

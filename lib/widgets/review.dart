@@ -12,8 +12,10 @@ class Review extends StatelessWidget {
       padding: EdgeInsets.all(10),
       margin: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey[400] ?? Colors.grey),
-        borderRadius: BorderRadius.circular(10),
+        border: Border(
+          bottom: BorderSide(color: Colors.grey[400] ?? Colors.grey),
+        ),
+        // borderRadius: BorderRadius.circular(10),
       ),
       width: 500,
       child: Wrap(
