@@ -18,17 +18,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<AuthProvider>(
       create: (ctx) => AuthProvider(authService),
-      child: MyHomePage(),
+      child: AppPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class AppPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
@@ -36,12 +31,12 @@ class _MyHomePageState extends State<MyHomePage> {
       api,
       user: authProvider.currentUser,
     );
-    return ChangeNotifierProvider<CatalogModel>(
-      create: (ctx) =>
-          CatalogModel(catalogService)..initModels().catchError(print),
-      child: MaterialApp(
-        home: Home(),
-      ),
+
+    final catalogModel = CatalogModel(catalogService)..initModels();
+
+    return ChangeNotifierProvider<CatalogModel>.value(
+      value: catalogModel,
+      child: MaterialApp(home: CatalogHome()),
     );
   }
 }
