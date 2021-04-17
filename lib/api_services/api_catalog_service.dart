@@ -9,11 +9,10 @@ import 'package:http/http.dart' as http;
 
 class APICatalogService implements CatalogService {
   final API _api;
-  final User? _user;
-  APICatalogService(this._api, {User? user}) : _user = user;
+  APICatalogService(this._api);
 
-  Map<String, String> _authHeaders() => {
-        if (_user != null) 'Authorization': 'Token ${_user!.token}',
+  Map<String, String> _authHeaders({String? authToken}) => {
+        if (authToken != null) 'Authorization': 'Token $authToken',
         'Content-Type': 'application/json',
       };
 
@@ -45,11 +44,11 @@ class APICatalogService implements CatalogService {
     int productId, {
     required String text,
     required int rate,
+    required User creator,
   }) async {
-    if (_user == null) throw new Exception('Unauthorized user');
     await http.post(
       _api.endpoint('reviews/$productId'),
-      headers: _authHeaders(),
+      headers: _authHeaders(authToken: creator.token),
       body: jsonEncode({
         'text': text,
         'rate': rate,
@@ -59,7 +58,7 @@ class APICatalogService implements CatalogService {
       content: text,
       rate: rate,
       creator: Creator(
-        username: _user!.username,
+        username: creator.username,
       ),
     );
   }

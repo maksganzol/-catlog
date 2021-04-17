@@ -7,35 +7,28 @@ import 'package:catalog/screens/catalog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-final api = API('http://smktesting.herokuapp.com', pathPrefix: 'api');
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final authService = ApiAuthService(api);
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<AuthProvider>(
-      create: (ctx) => AuthProvider(authService),
-      child: AppPage(),
-    );
-  }
-}
+    final api = API('http://smktesting.herokuapp.com', pathPrefix: 'api');
+    final authService = ApiAuthService(api);
+    final catalogService = APICatalogService(api);
 
-class AppPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
-    final catalogService = APICatalogService(
-      api,
-      user: authProvider.currentUser,
-    );
-
-    final catalogModel = CatalogModel(catalogService)..initModels();
-
-    return ChangeNotifierProvider<CatalogModel>.value(
-      value: catalogModel,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AuthProvider>(
+          create: (ctx) => AuthProvider(authService),
+        ),
+        ChangeNotifierProxyProvider<AuthProvider, CatalogModel>(
+          update: (ctx, auth, catalogModel) =>
+              catalogModel!..user = auth.currentUser,
+          create: (ctx) => CatalogModel(catalogService),
+        ),
+      ],
       child: MaterialApp(home: CatalogHome()),
     );
   }

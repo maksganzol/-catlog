@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 class CatalogHome extends StatelessWidget {
   const CatalogHome({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
